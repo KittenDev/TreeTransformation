@@ -24,22 +24,36 @@ address Allocation(infotype key);
 
 void TreeInitialization(address P);
 
-void InsertNode(infotype cari, infotype insert);
+void InsertNode(address Data, infotype Parent, infotype Input);
 
-void DeleteNode(address tree, infotype P);
+void DeleteNode(address Data, infotype Key);
 
-void UpdateNode(address tree, infotype P);
+void UpdateNode(address Data, infotype Key, infotype UpdateTo);
 
-address SearchNode(address tree, infotype P);
+address SearchNode(StructTree P, infotype X);
 
-bool IsEmpty(address tree);
+bool IsEmpty(StructTree Data);
 
-void Inorder(address tree);
+void Inorder(StructTree P);
 
-void LevelOrder(address tree);
+void PostOrder(StructTree P);
 
-void ConvertTree(address nonBinary, address Binary);
+void PreOrder(StructTree P);
 
-void Balance(address tree);
+void PrintTree(StructTree P, int Level);
+
+void ConvertTree(StructTree NonBinary, address BinaryTarget);
+
+void Balance(address Data);
+
+address BTtoDLL(StructTree Data);
+
+address Sort(StructTree Data);
+
+address DLLtoBT(StructTree Data);
+
+address GetMid(address head);
+
+address Merge(address firstList, address secondList);
 
 #endif
