@@ -2,9 +2,9 @@
 
 address Allocation(infotype key) 
 {
-    StructTree P;
+    address P;
 
-    P = (StructTree) malloc (sizeof(StructTree));
+    P = (address) malloc (sizeof(StructTree));
 
     if (!P)
     {
@@ -98,7 +98,7 @@ address SearchNode(StructTree P, infotype X)
     return NULL;
 }
 
-bool IsEmpty(StructTree Data)
+bool IsEmpty(address Data)
 {
     if (FirstSon(Data) != NULL)
     {
@@ -183,7 +183,7 @@ void PrintTree(StructTree P, int Level)
     }
 }
 
-void ConvertTree(StructTree NonBinary, address BinaryTarget)
+void ConvertTree(address NonBinary, address BinaryTarget)
 {
     if (NonBinary != NULL)
     {
@@ -215,9 +215,9 @@ void Balance(address Data)
     }
 }
 
-address BTtoDLL(StructTree Data)
+address BTtoDLL(address Data)
 {
-    StructTree Left, Right;
+    address Left, Right;
     if (Data != NULL)
     {
         if (LeftSon(Data) != NULL)
@@ -244,9 +244,9 @@ address BTtoDLL(StructTree Data)
     return Data;
 }
 
-address Sort(StructTree Data)
+address Sort(address Data)
 {
-    StructTree Middle, Temp;
+    address Middle, Temp;
 
     if (Data == NULL || RightSon(Data) == NULL)
     {
@@ -263,10 +263,10 @@ address Sort(StructTree Data)
     return Merge(Data, Middle);
 }
 
-address DLLtoBT(StructTree Data)
+address DLLtoBT(address Data)
 {
     // Deklarasi variabel
-    StructTree Root;
+    address Root;
 
     // Jika Data kosong, kembalikan NULL
     if (Data == NULL)
