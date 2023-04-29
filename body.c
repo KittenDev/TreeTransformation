@@ -1,44 +1,84 @@
 #include "header.h"
 
-address Allocation(infotype key) 
+address Alokasi(infotype key)
 {
     address P;
 
-    P = (address) malloc (sizeof(StructTree));
+    P = (address)malloc(sizeof(StructTree));
 
     if (!P)
+    {
+        printf("Memori Penuh!");
+        exit(0);
+    }
+    else
     {
         Info(P) = key;
         Parent(P) = NULL;
         FirstSon(P) = NULL;
         NextBrother(P) = NULL;
     }
-    
+
     return P;
 }
 
-void InsertNode(address Data, infotype Parent, infotype Input)
+void CreateTree(address *Data, int jmlNode)
 {
-    StructTree TempTraversal;
-
-    if (!IsEmpty(Data))
+    for (int i = 0; i < jmlNode; i++)
     {
-        TempTraversal = FirstSon(SearchNode(Data, Parent));
-        while (NextBrother(TempTraversal) != NULL)
+        infotype inputInfo, inputParent;
+        if (i == 0)
         {
-            TempTraversal = NextBrother(TempTraversal);
+            printf("Masukan karakter untuk root: ");
+            ScanChar(&inputInfo);
+            inputParent = ' ';
         }
-        NextBrother(TempTraversal) = Alokasi(Input);
+        else
+        {
+            printf("\nMasukan karakter parent untuk node ke [%d]: ", i + 1);
+            ScanChar(&inputParent);
+
+            printf("Masukan karakter untuk node ke [%d]: ", i + 1);
+            ScanChar(&inputInfo);
+        }
+
+        InsertNode(Data, inputParent, inputInfo);
+    }
+}
+
+void InsertNode(address *Data, infotype Parent, infotype Input)
+{
+    address TempTraversal;
+
+    if (!IsEmpty(*Data))
+    {
+
+        TempTraversal = SearchNode(*Data, Parent);
+        // Menentukan apakah ia akan menjadi first son atau menjadi last son
+        if (FirstSon(TempTraversal) == NULL)
+        {
+            FirstSon(TempTraversal) = Alokasi(Input);
+        }
+        else
+        {
+            TempTraversal = FirstSon(TempTraversal);
+            while (NextBrother(TempTraversal) != NULL)
+            {
+                TempTraversal = NextBrother(TempTraversal);
+            }
+            NextBrother(TempTraversal) = Alokasi(Input);
+        }
+        // Menentukan apakah ia akan menjadi first son atau menjadi last son
     }
     else
     {
-        Data = Alokasi(Input);
+        *Data = Alokasi(Input);
     }
 }
 
 void DeleteNode(address Data, infotype Key)
 {
-    StructTree SearchResult, ElemenPengganti, BrotherSebelum;
+    address SearchResult, ElemenPengganti, BrotherSebelum;
     SearchResult = SearchNode(Data, Key);
     if (SearchResult != NULL)
     {
@@ -68,39 +108,43 @@ void DeleteNode(address Data, infotype Key)
 
 void UpdateNode(address Data, infotype Key, infotype UpdateTo)
 {
-    StructTree SearchResult = SearchNode(Data, Key);
+    address SearchResult = SearchNode(Data, Key);
     if (SearchResult != NULL)
     {
         Info(SearchResult) = UpdateTo;
     }
 }
 
-address SearchNode(StructTree P, infotype X)
+address SearchNode(address P, infotype X)
 {
-    StructTree Son;
-    if (P != NULL)
+    if (P == NULL)
     {
-        if (Info(P) != X)
-        {
-            printf("%c\n", Info(P));
-            Son = FirstSon(P);
-            while (Son != NULL)
-            {
-                SearchNode(Son, X);
-                Son = NextBrother(Son);
-            }
-        }
-        else
-        {
-            return P;
-        }
+        return NULL;
     }
+
+    if (P->info == X)
+    {
+        return P;
+    }
+
+    address foundNode = SearchNode(FirstSon(P), X);
+    if (foundNode != NULL)
+    {
+        return foundNode;
+    }
+
+    foundNode = SearchNode(NextBrother(P), X);
+    if (foundNode != NULL)
+    {
+        return foundNode;
+    }
+
     return NULL;
 }
 
 bool IsEmpty(address Data)
 {
-    if (FirstSon(Data) != NULL)
+    if (Data->info != NULL)
     {
         return false;
     }
@@ -110,9 +154,9 @@ bool IsEmpty(address Data)
     }
 }
 
-void Inorder(StructTree P)
+void Inorder(address P)
 {
-    StructTree Son, Brother;
+    address Son, Brother;
     if (P != NULL)
     {
         Son = LeftSon(P);
@@ -130,9 +174,9 @@ void Inorder(StructTree P)
     }
 }
 
-void PostOrder(StructTree P)
+void PostOrder(address P)
 {
-    StructTree Son;
+    address Son;
 
     if (P != NULL)
     {
@@ -146,9 +190,9 @@ void PostOrder(StructTree P)
     }
 }
 
-void PreOrder(StructTree P)
+void PreOrder(address P)
 {
-    StructTree Son;
+    address Son;
     if (P != NULL)
     {
         printf("%c", Info(P));
@@ -161,7 +205,7 @@ void PreOrder(StructTree P)
     }
 }
 
-void PrintTree(StructTree P, int Level)
+void PrintTree(address P, int Level)
 {
     if (P != NULL)
     {
@@ -340,4 +384,49 @@ address Merge(address firstList, address secondList)
         LeftSon(secondList) = NULL;
         return secondList;
     }
+}
+
+void ScanChar(char *input)
+{
+    scanf("\n%c", input);
+    while (getchar() != '\n')
+        ;
+}
+
+void ScanInteger(int *input)
+{
+    if (scanf("%d", input) == 0) /*Apabila input yang diberikan bukan integer*/
+    {
+        (*input) = -99; /*input akan bernilai -99*/
+    }
+    while (getchar() != '\n')
+        ; /*Pembersihan karakter yang tersisa sampai newline*/
+}
+
+COORD ReadResolution()
+{
+    COORD Result;
+
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    Result.X = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    Result.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+    return Result;
+}
+
+void printc(char Pesan[])
+{
+    int columns = ReadResolution().X;
+    if (((columns - strlen(Pesan)) / 2) > 1)
+    {
+        for (size_t i = 0; i < ((columns - strlen(Pesan)) / 2); i++)
+        {
+            printf(" ");
+        }
+    }
+    // ^ Printf spasi sebanyak yang dibutuhkan teks agar memiliki posisi tengah
+
+    printf("%s", Pesan);
+    // ^ Print pesan yang ingin diletakan di tengah layar
 }

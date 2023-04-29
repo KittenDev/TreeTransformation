@@ -1,9 +1,11 @@
-#ifndef header
-#define header
+#ifndef header_H
+#define header_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <windows.h>
+#include <conio.h>
 
 #define infotype char
 #define Info(P) (P)->info
@@ -24,36 +26,40 @@ address Allocation(infotype key);
 
 void TreeInitialization(address P);
 
-void InsertNode(address Data, infotype Parent, infotype Input);
+void InsertNode(address* Data, infotype Parent, infotype Input);
 
 void DeleteNode(address Data, infotype Key);
 
 void UpdateNode(address Data, infotype Key, infotype UpdateTo);
 
-address SearchNode(StructTree P, infotype X);
+address SearchNode(address P, infotype X);
 
-bool IsEmpty(StructTree Data);
+bool IsEmpty(address Data);
 
-void Inorder(StructTree P);
+void Inorder(address P);
 
-void PostOrder(StructTree P);
+void PostOrder(address P);
 
-void PreOrder(StructTree P);
+void PreOrder(address P);
 
-void PrintTree(StructTree P, int Level);
+void PrintTree(address P, int Level);
 
-void ConvertTree(StructTree NonBinary, address BinaryTarget);
+void ConvertTree(address NonBinary, address BinaryTarget);
 
 void Balance(address Data);
 
-address BTtoDLL(StructTree Data);
+address BTtoDLL(address Data);
 
-address Sort(StructTree Data);
+address Sort(address Data);
 
-address DLLtoBT(StructTree Data);
+address DLLtoBT(address Data);
 
 address GetMid(address head);
 
 address Merge(address firstList, address secondList);
+
+void ScanChar (char *input);    
+
+void ScanInteger (int *input);
 
 #endif
