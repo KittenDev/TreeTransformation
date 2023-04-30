@@ -106,55 +106,54 @@ void InsertNode(address *Data, infotype Parent, infotype Input)
     }
 }
 
-void DeleteNode(address *Data, infotype Key) //! MASIH NGEBUG JIKA DELETE ELEMEN TENGAH
+void DeleteNode(address node)
 {
-    address search = SearchNode(*Data, Key); // Mencari node yang akan dihapus
-    if (!search)
-        return; // Jika node tidak ditemukan, langsung keluar dari fungsi
-
-    address parent = Parent(search);           // Menyimpan pointer ke parent node yang akan dihapus
-    address firstSon = FirstSon(search);       // Menyimpan pointer ke first son node yang akan dihapus
-    address nextBrother = NextBrother(search); // Menyimpan pointer ke next brother node yang akan dihapus
-
-    if (parent)
+    if (node)
     {
-        if (FirstSon(parent) == search) // Jika node yang akan dihapus adalah first son dari parent
+        if (Parent(node) == NULL)
         {
-            FirstSon(parent) = firstSon; // Mengganti first son parent dengan first son node yang akan dihapus
+            // Jika node yang akan dihapus adalah root
+            DeleteTree(&node);
+            node = NULL;
+            return;
+        }
+
+        address newFirstChild = NULL;
+        address sibling = NULL;
+        address child = NULL;
+
+        if (FirstSon(node) != NULL)
+        {
+            // Jika node memiliki anak
+            newFirstChild = FirstSon(node);
+            sibling = NextBrother(node);
+            child = NextBrother(newFirstChild);
+
+            Parent(newFirstChild) = Parent(node);
+            NextBrother(newFirstChild) = NextBrother(node);
+
+            if (child && !FirstSon(newFirstChild))
+                FirstSon(newFirstChild) = child;
+        }
+
+        if (FirstSon(Parent(node)) == node)
+        {
+            // Jika node adalah anak pertama dari parentnya
+            FirstSon(Parent(node)) = newFirstChild;
         }
         else
         {
-            address prevBrother = FirstSon(parent);
-            while (NextBrother(prevBrother) != search)
+            // Jika node bukan anak pertama dari parentnya
+            sibling = FirstSon(Parent(node));
+            while (NextBrother(sibling) != node)
             {
-                prevBrother = NextBrother(prevBrother);
+                sibling = NextBrother(sibling);
             }
-            NextBrother(prevBrother) = firstSon; // Mengganti next brother sebelum node yang akan dihapus dengan first son node yang akan dihapus
+            NextBrother(sibling) = NextBrother(node);
         }
 
-        if (firstSon)
-        {
-            address lastChild = firstSon;
-            while (NextBrother(lastChild))
-            {
-                lastChild = NextBrother(lastChild);
-            }
-
-            NextBrother(lastChild) = nextBrother; // Mengganti next brother anak terakhir dari node yang akan dihapus dengan next brother node yang akan dihapus
-        }
+        free(node);
     }
-    else
-    {
-        *Data = firstSon; // Jika node yang akan dihapus adalah root, mengganti root dengan first son node yang akan dihapus
-    }
-
-    if (firstSon)
-    {
-        Parent(firstSon) = parent;           // Memperbarui parent dari first son node yang akan dihapus
-        NextBrother(firstSon) = nextBrother; // Memperbarui next brother dari first son node yang akan dihapus
-    }
-
-    free(search); // Menghapus memory yang dialokasikan untuk node yang dihapus
 }
 
 void UpdateNode(address Data, infotype Key, infotype UpdateTo)
@@ -621,7 +620,7 @@ void menuUtama(address *TreeNonBinary)
             printHalfScreen("Masukan node yang ingin dihapus : ", false, false);
             ScanChar(&tempMasukanChar);
 
-            DeleteNode(TreeNonBinary, tempMasukanChar);
+            DeleteNode(SearchNode(*TreeNonBinary, tempMasukanChar));
 
             system("cls");
 
