@@ -22,42 +22,64 @@ address Alokasi(infotype key)
     return P;
 }
 
-void CreateTree(address *Data, int jmlNode)
+void CreateTree(address *TreeNonBinary, bool createRoot, int jmlNode)
 {
-    for (int i = 0; i < jmlNode; i++)
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    COORD cursorPos = consoleInfo.dwCursorPosition;
+    char pesan[50];
+
+    for (int i = 0; i <= jmlNode; i++)
     {
-        infotype inputInfo, inputParent;
-        if (i == 0)
-        {
-            printf("Masukan karakter untuk root: ");
-            ScanChar(&inputInfo);
-            inputParent = ' ';
-        }
-        else
-        {
-            printf("\nMasukan karakter parent untuk node ke [%d]: ", i + 1);
-            ScanChar(&inputParent);
+        system("cls");
+        printGridUI("INPUT DATA NON BINARY TREE");
+        printf("Kondisi non binary tree :\n");
+        if (i > 0 || !createRoot)
+            PrintTree(*TreeNonBinary, 0);
 
-            printf("Masukan karakter untuk node ke [%d]: ", i + 1);
-            ScanChar(&inputInfo);
-        }
+        if (i != jmlNode)
+        {
+            infotype inputInfo, inputParent;
+            gotoxy(cursorPos.X, cursorPos.Y);
+            if (i == 0 && createRoot)
+            {
+                printHalfScreen("Masukan karakter untuk root: ", false, true);
+                ScanChar(&inputInfo);
+                inputParent = ' ';
+            }
+            else
+            {
+                sprintf(pesan, "Masukan karakter parent untuk node ke [%d]: ", i + 1);
+                printHalfScreen(pesan, false, true);
+                ScanChar(&inputParent);
 
-        InsertNode(Data, inputParent, inputInfo);
+                sprintf(pesan, "Masukan karakter untuk node ke [%d]: ", i + 1);
+                printHalfScreen(pesan, false, false);
+                ScanChar(&inputInfo);
+            }
+
+            InsertNode(TreeNonBinary, inputParent, inputInfo);
+        }
     }
+
+    gotoxy(0, 2);
+    printHalfScreen("Proses insert berhasil, tekan ENTER untuk melanjutkan...", true, false);
+    getch();
 }
 
 void InsertNode(address *Data, infotype Parent, infotype Input)
 {
-    address TempTraversal;
+    address TempTraversal, FinalPos, ParentNode;
 
     if (!IsEmpty(*Data))
     {
 
         TempTraversal = SearchNode(*Data, Parent);
+        ParentNode = TempTraversal;
         // Menentukan apakah ia akan menjadi first son atau menjadi last son
         if (FirstSon(TempTraversal) == NULL)
         {
             FirstSon(TempTraversal) = Alokasi(Input);
+            FinalPos = FirstSon(TempTraversal);
         }
         else
         {
@@ -67,8 +89,10 @@ void InsertNode(address *Data, infotype Parent, infotype Input)
                 TempTraversal = NextBrother(TempTraversal);
             }
             NextBrother(TempTraversal) = Alokasi(Input);
+            FinalPos = NextBrother(TempTraversal);
         }
         // Menentukan apakah ia akan menjadi first son atau menjadi last son
+        Parent(FinalPos) = ParentNode;
     }
     else
     {
@@ -76,34 +100,55 @@ void InsertNode(address *Data, infotype Parent, infotype Input)
     }
 }
 
-void DeleteNode(address Data, infotype Key)
+void DeleteNode(address *Data, infotype Key) //! MASIH NGEBUG JIKA DELETE ELEMEN TENGAH
 {
-    address SearchResult, ElemenPengganti, BrotherSebelum;
-    SearchResult = SearchNode(Data, Key);
-    if (SearchResult != NULL)
-    {
-        ElemenPengganti = FirstSon(SearchResult);
-        if (ElemenPengganti != NULL)
-        {
-            Parent(ElemenPengganti) = Parent(SearchResult);
-            NextBrother(ElemenPengganti) = NextBrother(SearchResult);
+    address search = SearchNode(*Data, Key); // Mencari node yang akan dihapus
+    if (!search)
+        return; // Jika node tidak ditemukan, langsung keluar dari fungsi
 
-            if (FirstSon(Parent(SearchResult)) != SearchResult)
-            {
-                BrotherSebelum = FirstSon(Parent(SearchResult));
-                while (NextBrother(BrotherSebelum) != NULL)
-                {
-                    BrotherSebelum = NextBrother(BrotherSebelum);
-                }
-                NextBrother(BrotherSebelum) = ElemenPengganti;
-            }
-            else
-            {
-                FirstSon(Parent(SearchResult)) = ElemenPengganti;
-            }
+    address parent = Parent(search);           // Menyimpan pointer ke parent node yang akan dihapus
+    address firstSon = FirstSon(search);       // Menyimpan pointer ke first son node yang akan dihapus
+    address nextBrother = NextBrother(search); // Menyimpan pointer ke next brother node yang akan dihapus
+
+    if (parent)
+    {
+        if (FirstSon(parent) == search) // Jika node yang akan dihapus adalah first son dari parent
+        {
+            FirstSon(parent) = firstSon; // Mengganti first son parent dengan first son node yang akan dihapus
         }
-        free(SearchResult);
+        else
+        {
+            address prevBrother = FirstSon(parent);
+            while (NextBrother(prevBrother) != search)
+            {
+                prevBrother = NextBrother(prevBrother);
+            }
+            NextBrother(prevBrother) = firstSon; // Mengganti next brother sebelum node yang akan dihapus dengan first son node yang akan dihapus
+        }
+
+        if (firstSon)
+        {
+            address lastChild = firstSon;
+            while (NextBrother(lastChild))
+            {
+                lastChild = NextBrother(lastChild);
+            }
+
+            NextBrother(lastChild) = nextBrother; // Mengganti next brother anak terakhir dari node yang akan dihapus dengan next brother node yang akan dihapus
+        }
     }
+    else
+    {
+        *Data = firstSon; // Jika node yang akan dihapus adalah root, mengganti root dengan first son node yang akan dihapus
+    }
+
+    if (firstSon)
+    {
+        Parent(firstSon) = parent;           // Memperbarui parent dari first son node yang akan dihapus
+        NextBrother(firstSon) = nextBrother; // Memperbarui next brother dari first son node yang akan dihapus
+    }
+
+    free(search); // Menghapus memory yang dialokasikan untuk node yang dihapus
 }
 
 void UpdateNode(address Data, infotype Key, infotype UpdateTo)
@@ -171,6 +216,22 @@ void Inorder(address P)
                 Brother = NextBrother(Brother);
             }
         }
+    }
+}
+
+void DeleteTree(address *P)
+{
+    address Son;
+
+    if (*P != NULL)
+    {
+        Son = FirstSon(*P);
+        while (Son != NULL)
+        {
+            PostOrder(Son);
+            Son = NextBrother(Son);
+        }
+        free(*P);
     }
 }
 
@@ -413,45 +474,10 @@ void menuMembuatTreeSendiri(address *TreeNonBinary)
 
     printGridUI("INPUT DATA NON BINARY TREE");
 
-    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
-    COORD cursorPos = consoleInfo.dwCursorPosition;
     printHalfScreen("Masukan jumlah node pada tree : ", false, false);
     ScanInteger(&jmlNode);
 
-    char pesan[50];
-
-    for (int i = 0; i < jmlNode; i++)
-    {
-        system("cls");
-        printGridUI("INPUT DATA NON BINARY TREE");
-        printf("Kondisi non binary tree :\n");
-        if (i > 0)
-            PrintTree(*TreeNonBinary, 0);
-
-        infotype inputInfo, inputParent;
-        gotoxy(cursorPos.X, cursorPos.Y + 1);
-        if (i == 0)
-        {
-            printHalfScreen("Masukan karakter untuk root: ", false, true);
-            ScanChar(&inputInfo);
-            inputParent = ' ';
-        }
-        else
-        {
-            sprintf(pesan, "Masukan karakter parent untuk node ke [%d]: ", i + 1);
-            printHalfScreen(pesan, false, true);
-            ScanChar(&inputParent);
-
-            sprintf(pesan, "Masukan karakter untuk node ke [%d]: ", i + 1);
-            printHalfScreen(pesan, false, false);
-            ScanChar(&inputInfo);
-        }
-
-        InsertNode(TreeNonBinary, inputParent, inputInfo);
-    }
-
-    printHalfScreen("Proses insert berhasil, tekan ENTER untuk melanjutkan...", true, false);
-    getch();
+    CreateTree(TreeNonBinary, true, jmlNode);
 }
 
 void menuAwal(address *TreeNonBinary)
@@ -498,6 +524,165 @@ void menuAwal(address *TreeNonBinary)
     case 2:
         menuMembuatTreeSendiri(TreeNonBinary);
         break;
+    }
+}
+
+void menuUtama(address *TreeNonBinary)
+{
+    address tempNode;
+    int tempPilihan;
+    char tempMasukanChar;
+
+    while (true)
+    {
+        system("cls");
+
+        printGridUI("MENU UTAMA");
+
+        printf("Struktur Non Binary Tree:\n");
+        PrintTree(*TreeNonBinary, 0);
+
+        gotoxy(0, 2);
+        printHalfScreen("Masukan Aksi:", true, false);
+        printHalfScreen("\t1.Insert", true, false);
+        printHalfScreen("\t2.Update", true, false);
+        printHalfScreen("\t3.Delete", true, false);
+        printHalfScreen("\t4.Search", true, false);
+        printHalfScreen("\t5.Konversi ke binary", true, false);
+        printHalfScreen("\t6.Keluar", true, false);
+        printHalfScreen(": ", true, false);
+
+        ScanInteger(&tempPilihan);
+        system("cls");
+        switch (tempPilihan)
+        {
+        case 1:
+
+            printGridUI("INSERT NODE BARU");
+
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0);
+
+            gotoxy(0, 3);
+            printHalfScreen("Masukan jumlah node yang ingin ditambah : ", false, false);
+            ScanInteger(&tempPilihan);
+
+            CreateTree(TreeNonBinary, false, tempPilihan);
+            break;
+
+        case 2:
+            printGridUI("UPDATE NODE");
+
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0);
+
+            gotoxy(0, 3);
+            printHalfScreen("Masukan node yang ingin diubah : ", false, false);
+            ScanChar(&tempMasukanChar);
+
+            tempNode = SearchNode(TreeNonBinary, tempMasukanChar);
+            printHalfScreen("Masukan karater baru untuk node tersebut: ", false, false);
+            ScanChar(&tempMasukanChar);
+            Info(tempNode) = tempMasukanChar;
+
+            system("cls");
+
+            printGridUI("HASIL UPDATE NODE");
+
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0);
+
+            gotoxy(0, 2);
+
+            printHalfScreen("Proses update berhasil, tekan ENTER untuk melanjutkan...", true, false);
+            getch();
+
+            break;
+
+        case 3:
+            printGridUI("DELETE NODE");
+
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0);
+
+            gotoxy(0, 3);
+            printHalfScreen("Masukan node yang ingin dihapus : ", false, false);
+            ScanChar(&tempMasukanChar);
+
+            DeleteNode(TreeNonBinary, tempMasukanChar);
+
+            system("cls");
+
+            printGridUI("HASIL DELETE NODE");
+
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0);
+
+            gotoxy(0, 2);
+
+            printHalfScreen("Proses delete berhasil, tekan ENTER untuk melanjutkan...", true, false);
+            getch();
+            break;
+
+        case 4:
+            printGridUI("SEARCH NODE");
+
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0);
+
+            gotoxy(0, 3);
+            printHalfScreen("Masukan node yang ingin dicari : ", false, false);
+            ScanChar(&tempMasukanChar);
+
+            tempNode = SearchNode(*TreeNonBinary, tempMasukanChar);
+
+            printHalfScreen("Alamat digunakan :", true, false);
+            printf(" %x\n", tempNode);
+            printHalfScreen("Isi Node :", false, false);
+            if (tempNode != NULL)
+            {
+                printf(" %c\n", Info(tempNode));
+            }
+            else
+            {
+                printf(" NULL\n");
+            }
+            printHalfScreen("Parent Node :", false, false);
+            if (Parent(tempNode) != NULL)
+            {
+                printf(" %c\n", Info(Parent(tempNode)));
+            }
+            else
+            {
+                printf(" NULL\n");
+            }
+            printHalfScreen("Next Brother :", false, false);
+            if (NextBrother(tempNode) != NULL)
+            {
+                printf(" %c\n", Info(NextBrother(tempNode)));
+            }
+            else
+            {
+                printf(" NULL\n");
+            }
+            printHalfScreen("First Son :", false, false);
+            if (FirstSon(tempNode) != NULL)
+            {
+                printf(" %c\n", Info(FirstSon(tempNode)));
+            }
+            else
+            {
+                printf(" NULL\n");
+            }
+
+            printHalfScreen("tekan ENTER untuk melanjutkan...", true, false);
+            getch();
+            break;
+
+        case 6:
+            exit(0);
+            break;
+        }
     }
 }
 
@@ -568,7 +753,7 @@ void printLine(char line)
 }
 void printCenterLine(char line, int StartPos)
 {
-    for (int i = StartPos; i < WindowsSize.Y; i++)
+    for (int i = StartPos; i < WindowsSize.Y - 1; i++)
     {
         GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
         COORD cursorPos = consoleInfo.dwCursorPosition;

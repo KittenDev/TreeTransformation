@@ -37,7 +37,8 @@ void TreeInitialization(address P);
 
 void InsertNode(address *Data, infotype Parent, infotype Input);
 
-void DeleteNode(address Data, infotype Key);
+void DeleteNode(address *Data, infotype Key);
+void DeleteTree(address *P);
 
 void UpdateNode(address Data, infotype Key, infotype UpdateTo);
 
