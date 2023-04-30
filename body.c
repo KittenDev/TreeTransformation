@@ -50,7 +50,13 @@ void CreateTree(address *TreeNonBinary, bool createRoot, int jmlNode)
             {
                 sprintf(pesan, "Masukan karakter parent untuk node ke [%d]: ", i + 1);
                 printHalfScreen(pesan, false, true);
+            Start:
                 ScanChar(&inputParent);
+                if (!SearchNode(*TreeNonBinary, inputParent))
+                {
+                    printHalfScreen("Parent tidak ditemukan, harap insert parent baru : ", false, true);
+                    goto Start;
+                }
 
                 sprintf(pesan, "Masukan karakter untuk node ke [%d]: ", i + 1);
                 printHalfScreen(pesan, false, false);
@@ -578,9 +584,15 @@ void menuUtama(address *TreeNonBinary)
 
             gotoxy(0, 3);
             printHalfScreen("Masukan node yang ingin diubah : ", false, false);
+        StartOfUpdate:
             ScanChar(&tempMasukanChar);
 
-            tempNode = SearchNode(TreeNonBinary, tempMasukanChar);
+            tempNode = SearchNode(*TreeNonBinary, tempMasukanChar);
+            if (!tempNode)
+            {
+                printHalfScreen("Node tidak ditemukan, harap insert Node baru : ", false, true);
+                goto StartOfUpdate;
+            }
             printHalfScreen("Masukan karater baru untuk node tersebut: ", false, false);
             ScanChar(&tempMasukanChar);
             Info(tempNode) = tempMasukanChar;
@@ -636,43 +648,50 @@ void menuUtama(address *TreeNonBinary)
 
             tempNode = SearchNode(*TreeNonBinary, tempMasukanChar);
 
-            printHalfScreen("Alamat digunakan :", true, false);
-            printf(" %x\n", tempNode);
-            printHalfScreen("Isi Node :", false, false);
-            if (tempNode != NULL)
+            if (tempNode)
             {
-                printf(" %c\n", Info(tempNode));
+                printHalfScreen("Alamat digunakan :", true, false);
+                printf(" %x\n", tempNode);
+                printHalfScreen("Isi Node :", false, false);
+                if (tempNode != NULL)
+                {
+                    printf(" %c\n", Info(tempNode));
+                }
+                else
+                {
+                    printf(" NULL\n");
+                }
+                printHalfScreen("Parent Node :", false, false);
+                if (Parent(tempNode) != NULL)
+                {
+                    printf(" %c\n", Info(Parent(tempNode)));
+                }
+                else
+                {
+                    printf(" NULL\n");
+                }
+                printHalfScreen("Next Brother :", false, false);
+                if (NextBrother(tempNode) != NULL)
+                {
+                    printf(" %c\n", Info(NextBrother(tempNode)));
+                }
+                else
+                {
+                    printf(" NULL\n");
+                }
+                printHalfScreen("First Son :", false, false);
+                if (FirstSon(tempNode) != NULL)
+                {
+                    printf(" %c\n", Info(FirstSon(tempNode)));
+                }
+                else
+                {
+                    printf(" NULL\n");
+                }
             }
             else
             {
-                printf(" NULL\n");
-            }
-            printHalfScreen("Parent Node :", false, false);
-            if (Parent(tempNode) != NULL)
-            {
-                printf(" %c\n", Info(Parent(tempNode)));
-            }
-            else
-            {
-                printf(" NULL\n");
-            }
-            printHalfScreen("Next Brother :", false, false);
-            if (NextBrother(tempNode) != NULL)
-            {
-                printf(" %c\n", Info(NextBrother(tempNode)));
-            }
-            else
-            {
-                printf(" NULL\n");
-            }
-            printHalfScreen("First Son :", false, false);
-            if (FirstSon(tempNode) != NULL)
-            {
-                printf(" %c\n", Info(FirstSon(tempNode)));
-            }
-            else
-            {
-                printf(" NULL\n");
+                printHalfScreen("Node tidak ditemukan..\n", true, false);
             }
 
             printHalfScreen("tekan ENTER untuk melanjutkan...", true, false);
