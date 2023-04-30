@@ -22,11 +22,20 @@ typedef struct tStructTree
     address ps_pr, ps_left, ps_right;
 } StructTree;
 
+// Variabel global untuk keperluan mempercantik visualisasi, tidak berkaitan dengan struktur
+HANDLE hConsole;
+CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+WORD saved_attributes;
+
+CONSOLE_SCREEN_BUFFER_INFO csbi;
+COORD WindowsSize;
+// Variabel global untuk keperluan mempercantik visualisasi, tidak berkaitan dengan struktur
+
 address Allocation(infotype key);
 
 void TreeInitialization(address P);
 
-void InsertNode(address* Data, infotype Parent, infotype Input);
+void InsertNode(address *Data, infotype Parent, infotype Input);
 
 void DeleteNode(address Data, infotype Key);
 
@@ -58,8 +67,22 @@ address GetMid(address head);
 
 address Merge(address firstList, address secondList);
 
-void ScanChar (char *input);    
+void ScanChar(char *input);
 
-void ScanInteger (int *input);
+void ScanInteger(int *input);
+
+// Header modul percantik tampilan
+
+void csrs(void);
+void gotoxy(int x, int y);
+void initSystem();
+void printGridUI(char Pesan[]);
+COORD ReadResolution();
+void printc(char Pesan[]);
+void printLine(char line);
+void printCenterLine(char line, int StartPos);
+void printHalfScreen(char Pesan[], bool isNewLine, bool cancelEnter);
+
+// Header modul percantik tampilan
 
 #endif

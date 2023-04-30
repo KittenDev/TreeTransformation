@@ -403,6 +403,137 @@ void ScanInteger(int *input)
         ; /*Pembersihan karakter yang tersisa sampai newline*/
 }
 
+// ================================================= Fungsi terpisah untuk merepresentasikan menu menu yang ada
+
+void menuMembuatTreeSendiri(address *TreeNonBinary)
+{
+    int jmlNode;
+
+    system("cls");
+
+    printGridUI("INPUT DATA NON BINARY TREE");
+
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    COORD cursorPos = consoleInfo.dwCursorPosition;
+    printHalfScreen("Masukan jumlah node pada tree : ", false, false);
+    ScanInteger(&jmlNode);
+
+    char pesan[50];
+
+    for (int i = 0; i < jmlNode; i++)
+    {
+        system("cls");
+        printGridUI("INPUT DATA NON BINARY TREE");
+        printf("Kondisi non binary tree :\n");
+        if (i > 0)
+            PrintTree(*TreeNonBinary, 0);
+
+        infotype inputInfo, inputParent;
+        gotoxy(cursorPos.X, cursorPos.Y + 1);
+        if (i == 0)
+        {
+            printHalfScreen("Masukan karakter untuk root: ", false, true);
+            ScanChar(&inputInfo);
+            inputParent = ' ';
+        }
+        else
+        {
+            sprintf(pesan, "Masukan karakter parent untuk node ke [%d]: ", i + 1);
+            printHalfScreen(pesan, false, true);
+            ScanChar(&inputParent);
+
+            sprintf(pesan, "Masukan karakter untuk node ke [%d]: ", i + 1);
+            printHalfScreen(pesan, false, false);
+            ScanChar(&inputInfo);
+        }
+
+        InsertNode(TreeNonBinary, inputParent, inputInfo);
+    }
+
+    printHalfScreen("Proses insert berhasil, tekan ENTER untuk melanjutkan...", true, false);
+    getch();
+}
+
+void menuAwal(address *TreeNonBinary)
+{
+    int tempPilihan;
+    /* code */
+
+    printGridUI("INITIALISASI DATA TREE");
+
+    printf("\nTree Default:\n");
+    printf("R\n");
+    printf("|--O\n");
+    printf("|  |--I\n");
+    printf("|  |  |--M\n");
+    printf("|  |  |--S\n");
+    printf("|  |  |--F\n");
+    printf("|--U\n");
+    printf("|  |--T\n");
+    printf("|  |--N\n");
+    printf("|  |--E\n");
+
+    gotoxy(0, 3);
+    printHalfScreen("Pilih opsi tree yang akan digunakan", true, false);
+    printHalfScreen("\t1. Tree Default", true, false);
+    printHalfScreen("\t2. Make your own Tree", true, false);
+    printHalfScreen(": ", true, false);
+
+    ScanInteger(&tempPilihan);
+    switch (tempPilihan)
+    {
+    case 1:
+        InsertNode(TreeNonBinary, ' ', 'R'); // Parent
+        InsertNode(TreeNonBinary, 'R', 'O');
+        InsertNode(TreeNonBinary, 'R', 'U');
+        InsertNode(TreeNonBinary, 'O', 'I');
+        InsertNode(TreeNonBinary, 'I', 'M');
+        InsertNode(TreeNonBinary, 'I', 'S');
+        InsertNode(TreeNonBinary, 'I', 'F');
+        InsertNode(TreeNonBinary, 'U', 'T');
+        InsertNode(TreeNonBinary, 'U', 'N');
+        InsertNode(TreeNonBinary, 'U', 'E');
+        break;
+
+    case 2:
+        menuMembuatTreeSendiri(TreeNonBinary);
+        break;
+    }
+}
+
+// ================================================= Fungsi terpisah untuk merepresentasikan menu menu yang ada
+
+// ================================================= Fungsi tambahan yang hanya berguna untuk mempercantik tampilan, tidak berpengaruh pada alur proses
+void csrs(void)
+{
+    COORD pos = {0, 1};
+    SetConsoleCursorPosition(hConsole, pos);
+}
+void gotoxy(int x, int y)
+{
+    COORD c;
+    c.X = x;
+    c.Y = y;
+    SetConsoleCursorPosition(hConsole, c);
+}
+
+void initSystem()
+{
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+    saved_attributes = consoleInfo.wAttributes;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    WindowsSize.X = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    WindowsSize.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+}
+
+void printGridUI(char Pesan[])
+{
+    printCenterLine('|', 2);
+    printc(Pesan);
+    printLine('-');
+}
+
 COORD ReadResolution()
 {
     COORD Result;
@@ -417,16 +548,51 @@ COORD ReadResolution()
 
 void printc(char Pesan[])
 {
-    int columns = ReadResolution().X;
-    if (((columns - strlen(Pesan)) / 2) > 1)
+    int usedPos = (WindowsSize.X - strlen(Pesan)) / 2;
+    if (usedPos > 1)
     {
-        for (size_t i = 0; i < ((columns - strlen(Pesan)) / 2); i++)
-        {
-            printf(" ");
-        }
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        COORD cursorPos = consoleInfo.dwCursorPosition;
+        gotoxy(usedPos, cursorPos.Y + 1);
     }
-    // ^ Printf spasi sebanyak yang dibutuhkan teks agar memiliki posisi tengah
-
-    printf("%s", Pesan);
-    // ^ Print pesan yang ingin diletakan di tengah layar
+    printf("%s\n", Pesan);
 }
+
+void printLine(char line)
+{
+    for (int i = 0; i < WindowsSize.X; i++)
+    {
+        printf("%c", line);
+    }
+    printf("\n");
+}
+void printCenterLine(char line, int StartPos)
+{
+    for (int i = StartPos; i < WindowsSize.Y; i++)
+    {
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        COORD cursorPos = consoleInfo.dwCursorPosition;
+        gotoxy((WindowsSize.X / 2) - 2, i);
+        printf("%c", line);
+    }
+    gotoxy(0, 0);
+}
+
+void printHalfScreen(char Pesan[], bool isNewLine, bool cancelEnter)
+{
+    int usedPos = (WindowsSize.X) / 2;
+    if (usedPos > 1)
+    {
+        GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+        int cursorPos = consoleInfo.dwCursorPosition.Y;
+        if (isNewLine && !cancelEnter)
+            cursorPos++;
+        if (cancelEnter)
+        {
+            cursorPos--;
+        }
+        gotoxy(usedPos, cursorPos);
+    }
+    printf("%s", Pesan);
+}
+// ================================================= Fungsi tambahan yang hanya berguna untuk mempercantik tampilan, tidak berpengaruh pada alur proses
