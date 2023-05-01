@@ -33,8 +33,8 @@ void CreateTree(address *TreeNonBinary, bool createRoot, int jmlNode)
         system("cls");
         printGridUI("INPUT DATA NON BINARY TREE");
         printf("Kondisi non binary tree :\n");
-        if (i > 0 || !createRoot)
-            PrintTree(*TreeNonBinary, 0);
+        // if (i > 0 || !createRoot)
+        PrintTree(*TreeNonBinary, 0);
 
         if (i != jmlNode)
         {
@@ -114,7 +114,6 @@ void DeleteNode(address node)
         {
             // Jika node yang akan dihapus adalah root
             DeleteTree(&node);
-            node = NULL;
             return;
         }
 
@@ -194,7 +193,7 @@ address SearchNode(address P, infotype X)
 
 bool IsEmpty(address Data)
 {
-    if (Data->info != NULL)
+    if (Data != NULL)
     {
         return false;
     }
@@ -226,15 +225,15 @@ void Inorder(address P)
 
 void DeleteTree(address *P)
 {
-    address Son;
+    address *Son;
 
     if (*P != NULL)
     {
         Son = FirstSon(*P);
-        while (Son != NULL)
+        while ((*Son) != NULL)
         {
-            PostOrder(Son);
-            Son = NextBrother(Son);
+            DeleteTree((*Son));
+            (*Son) = NextBrother((*Son));
         }
         free(*P);
     }
@@ -536,7 +535,7 @@ void menuUtama(address *TreeNonBinary)
 {
     address tempNode;
     int tempPilihan;
-    char tempMasukanChar;
+    char tempMasukanChar, tempRootChar;
 
     while (true)
     {
@@ -611,6 +610,7 @@ void menuUtama(address *TreeNonBinary)
             break;
 
         case 3:
+            tempRootChar = Info(*TreeNonBinary);
             printGridUI("DELETE NODE");
 
             printf("Struktur Non Binary Tree:\n");
@@ -621,6 +621,8 @@ void menuUtama(address *TreeNonBinary)
             ScanChar(&tempMasukanChar);
 
             DeleteNode(SearchNode(*TreeNonBinary, tempMasukanChar));
+            if (tempMasukanChar == tempRootChar)
+                *TreeNonBinary = NULL;
 
             system("cls");
 

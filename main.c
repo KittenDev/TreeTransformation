@@ -4,7 +4,7 @@
 int main()
 {
     initSystem();
-    address TreeNonBinary;
+    address TreeNonBinary = NULL;
 
     menuAwal(&TreeNonBinary);
     menuUtama(&TreeNonBinary);
