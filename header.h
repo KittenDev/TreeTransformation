@@ -44,7 +44,7 @@ void DeleteTree(address *P);
 void PostOrder(address P);
 void PreOrder(address P);
 void LevelOrder(address P);
-void PrintTree(address P, int Level);
+void PrintTree(address P, int Level, bool binary);
 void ConvertTree(address NonBinary, address *BinaryTarget);
 void Balance(address *Data);
 address BTtoDLL(address Data);

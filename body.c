@@ -34,7 +34,7 @@ void CreateTree(address *TreeNonBinary, bool createRoot, int jmlNode)
         system("cls");
         printGridUI("INPUT DATA NON BINARY TREE");
         printf("Kondisi non binary tree :\n");
-        PrintTree(*TreeNonBinary, 0);
+        PrintTree(*TreeNonBinary, 0, false);
 
         if (i != jmlNode)
         {
@@ -61,7 +61,8 @@ void CreateTree(address *TreeNonBinary, bool createRoot, int jmlNode)
                 sprintf(pesan, "Masukan karakter untuk node ke [%d]: ", i + 1);
                 printHalfScreen(pesan, false, false);
                 ScanChar(&inputInfo);
-                if (SearchNode(*TreeNonBinary, inputInfo)){
+                if (SearchNode(*TreeNonBinary, inputInfo))
+                {
                     printHalfScreen("Karakter sama ada di dalam tree, input karakter lain\n\n", false, true);
                     goto Start2;
                 }
@@ -276,26 +277,31 @@ void PreOrder(address P)
 
 void LevelOrder(address P)
 {
-    if (P == NULL) {
+    if (P == NULL)
+    {
         return;
     }
 
     int size = 10; // initialize size to a larger value
-    address* Queue = (address*)malloc(size * sizeof(address));
+    address *Queue = (address *)malloc(size * sizeof(address));
     int front = 0, rear = 0;
 
     Queue[rear++] = P;
 
-    while (front < rear) {
+    while (front < rear)
+    {
         address temp = Queue[front++];
         printf("%c", Info(temp));
 
-        if (FirstSon(temp) != NULL) {
+        if (FirstSon(temp) != NULL)
+        {
             address sibling = FirstSon(temp);
-            while (sibling != NULL) {
-                if (rear == size) {
+            while (sibling != NULL)
+            {
+                if (rear == size)
+                {
                     size *= 2; // double the size of the queue
-                    Queue = (address*)realloc(Queue, size * sizeof(address));
+                    Queue = (address *)realloc(Queue, size * sizeof(address));
                 }
                 Queue[rear++] = sibling;
                 sibling = NextBrother(sibling);
@@ -306,9 +312,7 @@ void LevelOrder(address P)
     free(Queue);
 }
 
-
-
-void PrintTree(address P, int Level)
+void PrintTree(address P, int Level, bool binary)
 {
     if (P != NULL)
     {
@@ -325,8 +329,12 @@ void PrintTree(address P, int Level)
             }
         }
         printf("%c\n", Info(P));
-        PrintTree(LeftSon(P), Level + 1);
-        PrintTree(NextBrother(P), Level);
+        PrintTree(LeftSon(P), Level + 1, binary);
+        if (binary)
+        {
+            Level++;
+        }
+        PrintTree(NextBrother(P), Level, binary);
     }
 }
 
@@ -582,7 +590,7 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
         printGridUI("MENU UTAMA");
 
         printf("Struktur Non Binary Tree:\n");
-        PrintTree(*TreeNonBinary, 0);
+        PrintTree(*TreeNonBinary, 0, false);
 
         gotoxy(0, 2);
         printHalfScreen("Masukan Aksi:", true, false);
@@ -604,7 +612,7 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printGridUI("INSERT NODE BARU");
 
             printf("Struktur Non Binary Tree:\n");
-            PrintTree(*TreeNonBinary, 0);
+            PrintTree(*TreeNonBinary, 0, false);
 
             gotoxy(0, 3);
             printHalfScreen("Masukan jumlah node yang ingin ditambah : ", false, false);
@@ -620,7 +628,7 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printGridUI("UPDATE NODE");
 
             printf("Struktur Non Binary Tree:\n");
-            PrintTree(*TreeNonBinary, 0);
+            PrintTree(*TreeNonBinary, 0, false);
 
             gotoxy(0, 3);
             printHalfScreen("Masukan node yang ingin diubah : ", false, false);
@@ -642,7 +650,7 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printGridUI("HASIL UPDATE NODE");
 
             printf("Struktur Non Binary Tree:\n");
-            PrintTree(*TreeNonBinary, 0);
+            PrintTree(*TreeNonBinary, 0, false);
 
             gotoxy(0, 2);
 
@@ -656,7 +664,7 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printGridUI("DELETE NODE");
 
             printf("Struktur Non Binary Tree:\n");
-            PrintTree(*TreeNonBinary, 0);
+            PrintTree(*TreeNonBinary, 0, false);
 
             gotoxy(0, 3);
             printHalfScreen("Masukan node yang ingin dihapus : ", false, false);
@@ -671,7 +679,7 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printGridUI("HASIL DELETE NODE");
 
             printf("Struktur Non Binary Tree:\n");
-            PrintTree(*TreeNonBinary, 0);
+            PrintTree(*TreeNonBinary, 0, false);
 
             gotoxy(0, 2);
 
@@ -683,7 +691,7 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printGridUI("SEARCH NODE");
 
             printf("Struktur Non Binary Tree:\n");
-            PrintTree(*TreeNonBinary, 0);
+            PrintTree(*TreeNonBinary, 0, false);
 
             gotoxy(0, 3);
             printHalfScreen("Masukan node yang ingin dicari : ", false, false);
@@ -745,7 +753,7 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printGridUI("PRINT TREE");
 
             printf("Struktur Non Binary Tree:\n");
-            PrintTree(*TreeNonBinary, 0);
+            PrintTree(*TreeNonBinary, 0, false);
 
             gotoxy(0, 3);
             printHalfScreen("INORDER : ", false, false);
@@ -774,15 +782,15 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             ConvertTree(*TreeNonBinary, &(*TreeBinary));
 
             printf("Struktur Non Binary Tree:\n");
-            PrintTree(*TreeNonBinary, 0);
+            PrintTree(*TreeNonBinary, 0, false);
 
             printf("Struktur Tree Hasil Transformasi:\n");
-            PrintTree(*TreeBinary, 0);
+            PrintTree(*TreeBinary, 0, true);
 
             Balance(&(*TreeBinary));
 
             printf("Struktur Tree Setelah Balancing:\n");
-            PrintTree(*TreeBinary, 0);
+            PrintTree(*TreeBinary, 0, true);
 
             gotoxy(0, 3);
             printHalfScreen("Proses transformasi berhasil, tekan ENTER untuk melanjutkan...", true, false);
