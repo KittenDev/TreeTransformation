@@ -572,7 +572,10 @@ void menuUtama(address *TreeNonBinary)
             printHalfScreen("Masukan jumlah node yang ingin ditambah : ", false, false);
             ScanInteger(&tempPilihan);
 
-            CreateTree(TreeNonBinary, false, tempPilihan);
+            if (IsEmpty(*TreeNonBinary))
+                CreateTree(TreeNonBinary, true, tempPilihan);
+            else
+                CreateTree(TreeNonBinary, false, tempPilihan);
             break;
 
         case 2:
