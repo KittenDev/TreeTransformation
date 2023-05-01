@@ -43,6 +43,7 @@ void Inorder(address P);
 void DeleteTree(address *P);
 void PostOrder(address P);
 void PreOrder(address P);
+void LevelOrder(address P);
 void PrintTree(address P, int Level);
 void ConvertTree(address NonBinary, address BinaryTarget);
 void Balance(address Data);

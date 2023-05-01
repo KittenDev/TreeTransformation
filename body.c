@@ -57,10 +57,14 @@ void CreateTree(address *TreeNonBinary, bool createRoot, int jmlNode)
                     printHalfScreen("Parent tidak ditemukan, harap insert parent baru : ", false, true);
                     goto Start;
                 }
-
+            Start2:
                 sprintf(pesan, "Masukan karakter untuk node ke [%d]: ", i + 1);
                 printHalfScreen(pesan, false, false);
                 ScanChar(&inputInfo);
+                if (SearchNode(*TreeNonBinary, inputInfo)){
+                    printHalfScreen("Karakter sama ada di dalam tree, input karakter lain\n\n", false, true);
+                    goto Start2;
+                }
             }
 
             InsertNode(TreeNonBinary, inputParent, inputInfo);
@@ -269,6 +273,40 @@ void PreOrder(address P)
         }
     }
 }
+
+void LevelOrder(address P)
+{
+    if (P == NULL) {
+        return;
+    }
+
+    int size = 10; // initialize size to a larger value
+    address* Queue = (address*)malloc(size * sizeof(address));
+    int front = 0, rear = 0;
+
+    Queue[rear++] = P;
+
+    while (front < rear) {
+        address temp = Queue[front++];
+        printf("%c", Info(temp));
+
+        if (FirstSon(temp) != NULL) {
+            address sibling = FirstSon(temp);
+            while (sibling != NULL) {
+                if (rear == size) {
+                    size *= 2; // double the size of the queue
+                    Queue = (address*)realloc(Queue, size * sizeof(address));
+                }
+                Queue[rear++] = sibling;
+                sibling = NextBrother(sibling);
+            }
+        }
+    }
+
+    free(Queue);
+}
+
+
 
 void PrintTree(address P, int Level)
 {
@@ -721,6 +759,10 @@ void menuUtama(address *TreeNonBinary)
             printHalfScreen("PREORDER : ", true, false);
             printHalfScreen("\t->  ", true, false);
             PreOrder(*TreeNonBinary);
+
+            printHalfScreen("LEVELORDER : ", true, false);
+            printHalfScreen("\t->  ", true, false);
+            LevelOrder(*TreeNonBinary);
 
             printHalfScreen("\n", false, false);
             printHalfScreen("tekan ENTER untuk melanjutkan...", true, false);
