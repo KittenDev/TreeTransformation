@@ -4,9 +4,10 @@ int main()
 {
     initSystem();
     address TreeNonBinary = NULL;
+    address TreeBinary = NULL;
 
-    menuAwal(&TreeNonBinary);
-    menuUtama(&TreeNonBinary);
+    menuAwal(&TreeNonBinary, &TreeBinary);
+    menuUtama(&TreeNonBinary, &TreeBinary);
 
     return 0;
 }

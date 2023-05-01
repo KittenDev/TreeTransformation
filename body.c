@@ -330,35 +330,35 @@ void PrintTree(address P, int Level)
     }
 }
 
-void ConvertTree(address NonBinary, address BinaryTarget)
+void ConvertTree(address NonBinary, address *BinaryTarget)
 {
     if (NonBinary != NULL)
     {
-        BinaryTarget = Alokasi(Info(NonBinary));
-        ConvertTree(FirstSon(BinaryTarget), LeftSon(NonBinary));
-        if (LeftSon(BinaryTarget) != NULL)
+        (*BinaryTarget) = Alokasi(Info(NonBinary));
+        ConvertTree(FirstSon(NonBinary), &LeftSon(*BinaryTarget));
+        if (LeftSon(*BinaryTarget) != NULL)
         {
-            Parent(LeftSon(BinaryTarget)) = BinaryTarget;
+            Parent(LeftSon(*BinaryTarget)) = (*BinaryTarget);
         }
-        ConvertTree(NextBrother(BinaryTarget), RightSon(NonBinary));
-        if (RightSon(BinaryTarget) != NULL)
+        ConvertTree(NextBrother(NonBinary), &RightSon(*BinaryTarget));
+        if (RightSon(*BinaryTarget) != NULL)
         {
-            Parent(RightSon(BinaryTarget)) = BinaryTarget;
+            Parent(RightSon(*BinaryTarget)) = (*BinaryTarget);
         }
     }
 }
 
-void Balance(address Data)
+void Balance(address *Data)
 {
-    if (!IsEmpty(Data))
+    if (!IsEmpty(*Data))
     {
-        Data = BTtoDLL(Data);
-        while (LeftSon(Data) != NULL)
+        (*Data) = BTtoDLL(*Data);
+        while (LeftSon(*Data) != NULL)
         {
-            Data = LeftSon(Data);
+            (*Data) = LeftSon(*Data);
         }
-        Data = Sort(Data);
-        Data = DLLtoBT(Data);
+        (*Data) = Sort(*Data);
+        (*Data) = DLLtoBT(*Data);
     }
 }
 
@@ -522,7 +522,7 @@ void menuMembuatTreeSendiri(address *TreeNonBinary)
     CreateTree(TreeNonBinary, true, jmlNode);
 }
 
-void menuAwal(address *TreeNonBinary)
+void menuAwal(address *TreeNonBinary, address *TreeBinary)
 {
     int tempPilihan;
     /* code */
@@ -569,7 +569,7 @@ void menuAwal(address *TreeNonBinary)
     }
 }
 
-void menuUtama(address *TreeNonBinary)
+void menuUtama(address *TreeNonBinary, address *TreeBinary)
 {
     address tempNode;
     int tempPilihan;
@@ -769,6 +769,25 @@ void menuUtama(address *TreeNonBinary)
             getch();
             break;
 
+        case 6:
+            printGridUI("TRANSFORMASI TREE");
+            ConvertTree(*TreeNonBinary, &(*TreeBinary));
+
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0);
+
+            printf("Struktur Tree Hasil Transformasi:\n");
+            PrintTree(*TreeBinary, 0);
+
+            Balance(&(*TreeBinary));
+
+            printf("Struktur Tree Setelah Balancing:\n");
+            PrintTree(*TreeBinary, 0);
+
+            gotoxy(0, 3);
+            printHalfScreen("Proses transformasi berhasil, tekan ENTER untuk melanjutkan...", true, false);
+            getch();
+            break;
         case 7:
             exit(0);
             break;

@@ -45,8 +45,8 @@ void PostOrder(address P);
 void PreOrder(address P);
 void LevelOrder(address P);
 void PrintTree(address P, int Level);
-void ConvertTree(address NonBinary, address BinaryTarget);
-void Balance(address Data);
+void ConvertTree(address NonBinary, address *BinaryTarget);
+void Balance(address *Data);
 address BTtoDLL(address Data);
 address Sort(address Data);
 address DLLtoBT(address Data);
@@ -57,8 +57,8 @@ void ScanInteger(int *input);
 
 // Fungsi terpisah untuk merepresentasikan menu menu yang ada
 void menuMembuatTreeSendiri(address *TreeNonBinary);
-void menuAwal(address *TreeNonBinary);
-void menuUtama(address *TreeNonBinary);
+void menuAwal(address *TreeNonBinary, address *TreeBinary);
+void menuUtama(address *TreeNonBinary, address *TreeBinary);
 
 // ================================================= Fungsi tambahan yang hanya berguna untuk mempercantik tampilan, tidak berpengaruh pada alur proses
 void csrs(void);
