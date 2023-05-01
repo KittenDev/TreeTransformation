@@ -9,6 +9,7 @@ address Alokasi(infotype key)
     if (!P)
     {
         printf("Memori Penuh!");
+        getch();
         exit(0);
     }
     else
@@ -33,7 +34,6 @@ void CreateTree(address *TreeNonBinary, bool createRoot, int jmlNode)
         system("cls");
         printGridUI("INPUT DATA NON BINARY TREE");
         printf("Kondisi non binary tree :\n");
-        // if (i > 0 || !createRoot)
         PrintTree(*TreeNonBinary, 0);
 
         if (i != jmlNode)
@@ -552,8 +552,9 @@ void menuUtama(address *TreeNonBinary)
         printHalfScreen("\t2.Update", true, false);
         printHalfScreen("\t3.Delete", true, false);
         printHalfScreen("\t4.Search", true, false);
-        printHalfScreen("\t5.Konversi ke binary", true, false);
-        printHalfScreen("\t6.Keluar", true, false);
+        printHalfScreen("\t5.Print", true, false);
+        printHalfScreen("\t6.Konversi ke binary", true, false);
+        printHalfScreen("\t7.Keluar", true, false);
         printHalfScreen(": ", true, false);
 
         ScanInteger(&tempPilihan);
@@ -699,7 +700,31 @@ void menuUtama(address *TreeNonBinary)
             getch();
             break;
 
-        case 6:
+        case 5:
+            printGridUI("PRINT TREE");
+
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0);
+
+            gotoxy(0, 3);
+            printHalfScreen("INORDER : ", false, false);
+            printHalfScreen("\t->  ", true, false);
+            Inorder(*TreeNonBinary);
+
+            printHalfScreen("POSTORDER : ", true, false);
+            printHalfScreen("\t->  ", true, false);
+            PostOrder(*TreeNonBinary);
+
+            printHalfScreen("PREORDER : ", true, false);
+            printHalfScreen("\t->  ", true, false);
+            PreOrder(*TreeNonBinary);
+
+            printHalfScreen("\n", false, false);
+            printHalfScreen("tekan ENTER untuk melanjutkan...", true, false);
+            getch();
+            break;
+
+        case 7:
             exit(0);
             break;
         }
@@ -734,6 +759,8 @@ void initSystem()
 
 void printGridUI(char Pesan[])
 {
+    initSystem();
+
     printCenterLine('|', 2);
     printc(Pesan);
     printLine('-');
@@ -776,7 +803,6 @@ void printCenterLine(char line, int StartPos)
     for (int i = StartPos; i < WindowsSize.Y - 1; i++)
     {
         GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
-        COORD cursorPos = consoleInfo.dwCursorPosition;
         gotoxy((WindowsSize.X / 2) - 2, i);
         printf("%c", line);
     }

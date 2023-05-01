@@ -31,49 +31,35 @@ CONSOLE_SCREEN_BUFFER_INFO csbi;
 COORD WindowsSize;
 // Variabel global untuk keperluan mempercantik visualisasi, tidak berkaitan dengan struktur
 
-address Allocation(infotype key);
-
-void TreeInitialization(address P);
-
+// Fungsi dan prosedur
+address Alokasi(infotype key);
+void CreateTree(address *TreeNonBinary, bool createRoot, int jmlNode);
 void InsertNode(address *Data, infotype Parent, infotype Input);
-
 void DeleteNode(address node);
-void DeleteTree(address *P);
-
 void UpdateNode(address Data, infotype Key, infotype UpdateTo);
-
 address SearchNode(address P, infotype X);
-
 bool IsEmpty(address Data);
-
 void Inorder(address P);
-
+void DeleteTree(address *P);
 void PostOrder(address P);
-
 void PreOrder(address P);
-
 void PrintTree(address P, int Level);
-
 void ConvertTree(address NonBinary, address BinaryTarget);
-
 void Balance(address Data);
-
 address BTtoDLL(address Data);
-
 address Sort(address Data);
-
 address DLLtoBT(address Data);
-
 address GetMid(address head);
-
 address Merge(address firstList, address secondList);
-
 void ScanChar(char *input);
-
 void ScanInteger(int *input);
 
-// Header modul percantik tampilan
+// Fungsi terpisah untuk merepresentasikan menu menu yang ada
+void menuMembuatTreeSendiri(address *TreeNonBinary);
+void menuAwal(address *TreeNonBinary);
+void menuUtama(address *TreeNonBinary);
 
+// ================================================= Fungsi tambahan yang hanya berguna untuk mempercantik tampilan, tidak berpengaruh pada alur proses
 void csrs(void);
 void gotoxy(int x, int y);
 void initSystem();
@@ -83,7 +69,6 @@ void printc(char Pesan[]);
 void printLine(char line);
 void printCenterLine(char line, int StartPos);
 void printHalfScreen(char Pesan[], bool isNewLine, bool cancelEnter);
-
-// Header modul percantik tampilan
+// ================================================= Fungsi tambahan yang hanya berguna untuk mempercantik tampilan, tidak berpengaruh pada alur proses
 
 #endif
