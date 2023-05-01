@@ -779,6 +779,9 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
 
         case 6:
             printGridUI("TRANSFORMASI TREE");
+            printHalfScreen("tekan ENTER untuk melanjutkan...", false, false);
+            gotoxy(0, 3);
+
             ConvertTree(*TreeNonBinary, &(*TreeBinary));
 
             printf("Struktur Non Binary Tree:\n");
@@ -792,8 +795,6 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printf("Struktur Tree Setelah Balancing:\n");
             PrintTree(*TreeBinary, 0, true);
 
-            gotoxy(0, 3);
-            printHalfScreen("Proses transformasi berhasil, tekan ENTER untuk melanjutkan...", true, false);
             getch();
             break;
         case 7:
