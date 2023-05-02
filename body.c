@@ -504,14 +504,18 @@ void ScanChar(char *input)
         ;
 }
 
-void ScanInteger(int *input)
+void ScanInteger(int *input, int Max, int Min)
 {
-    if (scanf("%d", input) == 0) /*Apabila input yang diberikan bukan integer*/
-    {
-        (*input) = -99; /*input akan bernilai -99*/
-    }
-    while (getchar() != '\n')
-        ; /*Pembersihan karakter yang tersisa sampai newline*/
+    int i=0;
+    do{
+        if(i>0){
+            printHalfScreen("Inputan tidak sesuai, mohon input kembali: ", true, false);
+        }
+        if (scanf("%d", &(*input)) == 0){
+            scanf("%*[^\n]");
+        }
+        i++;
+    }while(*input<Min || *input>Max);
 }
 
 // ================================================= Fungsi terpisah untuk merepresentasikan menu menu yang ada
@@ -525,7 +529,7 @@ void menuMembuatTreeSendiri(address *TreeNonBinary)
     printGridUI("INPUT DATA NON BINARY TREE");
 
     printHalfScreen("Masukan jumlah node pada tree : ", false, false);
-    ScanInteger(&jmlNode);
+    ScanInteger(&jmlNode, 10, 1);
 
     CreateTree(TreeNonBinary, true, jmlNode);
 }
@@ -555,7 +559,7 @@ void menuAwal(address *TreeNonBinary, address *TreeBinary)
     printHalfScreen("\t2. Make your own Tree", true, false);
     printHalfScreen(": ", true, false);
 
-    ScanInteger(&tempPilihan);
+    ScanInteger(&tempPilihan, 2, 1);
     switch (tempPilihan)
     {
     case 1:
@@ -603,7 +607,7 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
         printHalfScreen("\t7.Keluar", true, false);
         printHalfScreen(": ", true, false);
 
-        ScanInteger(&tempPilihan);
+        ScanInteger(&tempPilihan, 7, 1);
         system("cls");
         switch (tempPilihan)
         {
@@ -616,7 +620,7 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
 
             gotoxy(0, 3);
             printHalfScreen("Masukan jumlah node yang ingin ditambah : ", false, false);
-            ScanInteger(&tempPilihan);
+            ScanInteger(&tempPilihan, 10, 1);
 
             if (IsEmpty(*TreeNonBinary))
                 CreateTree(TreeNonBinary, true, tempPilihan);

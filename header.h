@@ -53,7 +53,7 @@ address DLLtoBT(address Data);
 address GetMid(address head);
 address Merge(address firstList, address secondList);
 void ScanChar(char *input);
-void ScanInteger(int *input);
+void ScanInteger(int *input, int Max, int Min);
 
 // Fungsi terpisah untuk merepresentasikan menu menu yang ada
 void menuMembuatTreeSendiri(address *TreeNonBinary);
