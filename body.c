@@ -506,16 +506,19 @@ void ScanChar(char *input)
 
 void ScanInteger(int *input, int Max, int Min)
 {
-    int i=0;
-    do{
-        if(i>0){
+    int i = 0;
+    do
+    {
+        if (i > 0)
+        {
             printHalfScreen("Inputan tidak sesuai, mohon input kembali: ", true, false);
         }
-        if (scanf("%d", &(*input)) == 0){
+        if (scanf("%d", &(*input)) == 0)
+        {
             scanf("%*[^\n]");
         }
         i++;
-    }while(*input<Min || *input>Max);
+    } while (*input < Min || *input > Max);
 }
 
 // ================================================= Fungsi terpisah untuk merepresentasikan menu menu yang ada
@@ -799,6 +802,8 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printf("Struktur Tree Setelah Balancing:\n");
             PrintTree(*TreeBinary, 0, true);
 
+            save(*TreeNonBinary, *TreeBinary);
+
             getch();
             break;
         case 7:
@@ -904,3 +909,63 @@ void printHalfScreen(char Pesan[], bool isNewLine, bool cancelEnter)
     printf("%s", Pesan);
 }
 // ================================================= Fungsi tambahan yang hanya berguna untuk mempercantik tampilan, tidak berpengaruh pada alur proses
+
+// Modul Save History
+void save(address TreeNonBinary, address TreeBinary)
+{
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+
+    char foldername[20];
+    sprintf(foldername, "history");
+    _mkdir(foldername);
+
+    char filename[20];
+    sprintf(filename, "history\\%04d-%02d-%02d, %02d-%02d.txt", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min);
+    FILE *fp = fopen(filename, "a");
+    if (fp == NULL)
+    {
+        return;
+    }
+    char teks[100];
+    sprintf(teks, "HISTORY KONVERSI PADA %04d-%02d-%02d | %02d:%02d\n\n-Struktur Non Binary Tree:\n", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min);
+
+    fprintf(fp, "%s", teks);
+    fclose(fp);
+    FilePrintTree(TreeNonBinary, 0, false, filename);
+
+    fp = fopen(filename, "a");
+    char teks2[] = "\n-Struktur Binary Tree:\n";
+    fprintf(fp, "%s", teks2);
+    fclose(fp);
+
+    FilePrintTree(TreeBinary, 0, TRUE, filename);
+}
+void FilePrintTree(address P, int Level, bool binary, char filename[])
+{
+    if (P != NULL)
+    {
+        FILE *fp = fopen(filename, "a");
+        int i = 1;
+        for (i = 1; i <= Level; i++)
+        {
+            if (i < Level)
+            {
+                fprintf(fp, "|  ");
+            }
+            else
+            {
+                fprintf(fp, "|--");
+            }
+        }
+        fprintf(fp, "%c\n", Info(P));
+        fclose(fp);
+        FilePrintTree(LeftSon(P), Level + 1, binary, filename);
+        if (binary)
+        {
+            Level++;
+        }
+        FilePrintTree(NextBrother(P), Level, binary, filename);
+    }
+}
+// Modul Save History
