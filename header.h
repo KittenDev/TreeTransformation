@@ -6,8 +6,6 @@
 #include <stdbool.h>
 #include <windows.h>
 #include <conio.h>
-#include <time.h>
-#include <sys/stat.h>
 
 #define infotype char
 #define Info(P) (P)->info
@@ -73,8 +71,5 @@ void printLine(char line);
 void printCenterLine(char line, int StartPos);
 void printHalfScreen(char Pesan[], bool isNewLine, bool cancelEnter);
 // ================================================= Fungsi tambahan yang hanya berguna untuk mempercantik tampilan, tidak berpengaruh pada alur proses
-
-void save(address TreeNonBinary, address TreeBinary);
-void FilePrintTree(address P, int Level, bool binary, char filename[]);
 
 #endif
