@@ -637,83 +637,61 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printf("Struktur Non Binary Tree:\n");
             PrintTree(*TreeNonBinary, 0, false);
 
-            if (IsEmpty(*TreeNonBinary))
+            gotoxy(0, 3);
+            printHalfScreen("Masukan node yang ingin diubah : ", false, false);
+        StartOfUpdate:
+            ScanChar(&tempMasukanChar);
+
+            tempNode = SearchNode(*TreeNonBinary, tempMasukanChar);
+            if (!tempNode)
             {
-                gotoxy(0, 3);
-                printHalfScreen("Tree Kosong/Tidak ada", true, false);
-                printHalfScreen("Proses update tidak dapat dilakukan,", true, false);
-                printHalfScreen("tekan ENTER untuk melanjutkan", true, false);
-                getch();
+                printHalfScreen("Node tidak ditemukan, harap insert Node baru : ", false, true);
+                goto StartOfUpdate;
             }
-            else
-            {
-                gotoxy(0, 3);
-                printHalfScreen("Masukan node yang ingin diubah : ", false, false);
-            StartOfUpdate:
-                ScanChar(&tempMasukanChar);
+            printHalfScreen("Masukan karater baru untuk node tersebut: ", false, false);
+            ScanChar(&tempMasukanChar);
+            Info(tempNode) = tempMasukanChar;
 
-                tempNode = SearchNode(*TreeNonBinary, tempMasukanChar);
-                if (!tempNode)
-                {
-                    printHalfScreen("Node tidak ditemukan, harap insert Node baru : ", false, true);
-                    goto StartOfUpdate;
-                }
-                printHalfScreen("Masukan karater baru untuk node tersebut: ", false, false);
-                ScanChar(&tempMasukanChar);
-                Info(tempNode) = tempMasukanChar;
+            system("cls");
 
-                system("cls");
+            printGridUI("HASIL UPDATE NODE");
 
-                printGridUI("HASIL UPDATE NODE");
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0, false);
 
-                printf("Struktur Non Binary Tree:\n");
-                PrintTree(*TreeNonBinary, 0, false);
+            gotoxy(0, 2);
 
-                gotoxy(0, 2);
-
-                printHalfScreen("Proses update berhasil, tekan ENTER untuk melanjutkan...", true, false);
-                getch();
-            }
+            printHalfScreen("Proses update berhasil, tekan ENTER untuk melanjutkan...", true, false);
+            getch();
 
             break;
 
         case 3:
+            tempRootChar = Info(*TreeNonBinary);
             printGridUI("DELETE NODE");
 
             printf("Struktur Non Binary Tree:\n");
             PrintTree(*TreeNonBinary, 0, false);
 
-            if (IsEmpty(*TreeNonBinary))
-            {
-                gotoxy(0, 3);
-                printHalfScreen("Tree Kosong/Tidak ada", true, false);
-                printHalfScreen("Proses Delete tidak dapat dilakukan,", true, false);
-                printHalfScreen("tekan ENTER untuk melanjutkan", true, false);
-                getch();
-            }
-            else
-            {
-                tempRootChar = Info(*TreeNonBinary);
-                gotoxy(0, 3);
-                printHalfScreen("Masukan node yang ingin dihapus : ", false, false);
-                ScanChar(&tempMasukanChar);
+            gotoxy(0, 3);
+            printHalfScreen("Masukan node yang ingin dihapus : ", false, false);
+            ScanChar(&tempMasukanChar);
 
-                DeleteNode(SearchNode(*TreeNonBinary, tempMasukanChar));
-                if (tempMasukanChar == tempRootChar)
-                    *TreeNonBinary = NULL;
+            DeleteNode(SearchNode(*TreeNonBinary, tempMasukanChar));
+            if (tempMasukanChar == tempRootChar)
+                *TreeNonBinary = NULL;
 
-                system("cls");
+            system("cls");
 
-                printGridUI("HASIL DELETE NODE");
+            printGridUI("HASIL DELETE NODE");
 
-                printf("Struktur Non Binary Tree:\n");
-                PrintTree(*TreeNonBinary, 0, false);
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0, false);
 
-                gotoxy(0, 2);
+            gotoxy(0, 2);
 
-                printHalfScreen("Proses delete berhasil, tekan ENTER untuk melanjutkan...", true, false);
-                getch();
-            }
+            printHalfScreen("Proses delete berhasil, tekan ENTER untuk melanjutkan...", true, false);
+            getch();
             break;
 
         case 4:
@@ -722,71 +700,60 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printf("Struktur Non Binary Tree:\n");
             PrintTree(*TreeNonBinary, 0, false);
 
-            if (IsEmpty(*TreeNonBinary))
-            {
-                gotoxy(0, 3);
-                printHalfScreen("Tree Kosong/Tidak ada", true, false);
-                printHalfScreen("Proses search tidak dapat dilakukan,", true, false);
-                printHalfScreen("tekan ENTER untuk melanjutkan", true, false);
-                getch();
-            }
-            else
-            {
-                gotoxy(0, 3);
-                printHalfScreen("Masukan node yang ingin dicari : ", false, false);
-                ScanChar(&tempMasukanChar);
+            gotoxy(0, 3);
+            printHalfScreen("Masukan node yang ingin dicari : ", false, false);
+            ScanChar(&tempMasukanChar);
 
-                tempNode = SearchNode(*TreeNonBinary, tempMasukanChar);
+            tempNode = SearchNode(*TreeNonBinary, tempMasukanChar);
 
-                if (tempNode)
+            if (tempNode)
+            {
+                printHalfScreen("Alamat digunakan :", true, false);
+                printf(" %x\n", tempNode);
+                printHalfScreen("Isi Node :", false, false);
+                if (tempNode != NULL)
                 {
-                    printHalfScreen("Alamat digunakan :", true, false);
-                    printf(" %x\n", tempNode);
-                    printHalfScreen("Isi Node :", false, false);
-                    if (tempNode != NULL)
-                    {
-                        printf(" %c\n", Info(tempNode));
-                    }
-                    else
-                    {
-                        printf(" NULL\n");
-                    }
-                    printHalfScreen("Parent Node :", false, false);
-                    if (Parent(tempNode) != NULL)
-                    {
-                        printf(" %c\n", Info(Parent(tempNode)));
-                    }
-                    else
-                    {
-                        printf(" NULL\n");
-                    }
-                    printHalfScreen("Next Brother :", false, false);
-                    if (NextBrother(tempNode) != NULL)
-                    {
-                        printf(" %c\n", Info(NextBrother(tempNode)));
-                    }
-                    else
-                    {
-                        printf(" NULL\n");
-                    }
-                    printHalfScreen("First Son :", false, false);
-                    if (FirstSon(tempNode) != NULL)
-                    {
-                        printf(" %c\n", Info(FirstSon(tempNode)));
-                    }
-                    else
-                    {
-                        printf(" NULL\n");
-                    }
+                    printf(" %c\n", Info(tempNode));
                 }
                 else
                 {
-                    printHalfScreen("Node tidak ditemukan..\n", true, false);
+                    printf(" NULL\n");
                 }
-
-                printHalfScreen("tekan ENTER untuk melanjutkan...", true, false);
-                getch();
+                printHalfScreen("Parent Node :", false, false);
+                if (Parent(tempNode) != NULL)
+                {
+                    printf(" %c\n", Info(Parent(tempNode)));
+                }
+                else
+                {
+                    printf(" NULL\n");
+                }
+                printHalfScreen("Next Brother :", false, false);
+                if (NextBrother(tempNode) != NULL)
+                {
+                    printf(" %c\n", Info(NextBrother(tempNode)));
+                }
+                else
+                {
+                    printf(" NULL\n");
+                }
+                printHalfScreen("First Son :", false, false);
+                if (FirstSon(tempNode) != NULL)
+                {
+                    printf(" %c\n", Info(FirstSon(tempNode)));
+                }
+                else
+                {
+                    printf(" NULL\n");
+                }
             }
+            else
+            {
+                printHalfScreen("Node tidak ditemukan..\n", true, false);
+            }
+
+            printHalfScreen("tekan ENTER untuk melanjutkan...", true, false);
+            getch();
             break;
 
         case 5:
@@ -795,69 +762,49 @@ void menuUtama(address *TreeNonBinary, address *TreeBinary)
             printf("Struktur Non Binary Tree:\n");
             PrintTree(*TreeNonBinary, 0, false);
 
-            if (IsEmpty(*TreeNonBinary))
-            {
-                gotoxy(0, 3);
-                printHalfScreen("Tree Kosong/Tidak ada", true, false);
-                printHalfScreen("Proses print tidak dapat dilakukan,", true, false);
-                printHalfScreen("tekan ENTER untuk melanjutkan", true, false);
-                getch();
-            }
-            else
-            {
-                gotoxy(0, 3);
-                printHalfScreen("INORDER : ", false, false);
-                printHalfScreen("\t->  ", true, false);
-                Inorder(*TreeNonBinary);
+            gotoxy(0, 3);
+            printHalfScreen("INORDER : ", false, false);
+            printHalfScreen("\t->  ", true, false);
+            Inorder(*TreeNonBinary);
 
-                printHalfScreen("POSTORDER : ", true, false);
-                printHalfScreen("\t->  ", true, false);
-                PostOrder(*TreeNonBinary);
+            printHalfScreen("POSTORDER : ", true, false);
+            printHalfScreen("\t->  ", true, false);
+            PostOrder(*TreeNonBinary);
 
-                printHalfScreen("PREORDER : ", true, false);
-                printHalfScreen("\t->  ", true, false);
-                PreOrder(*TreeNonBinary);
+            printHalfScreen("PREORDER : ", true, false);
+            printHalfScreen("\t->  ", true, false);
+            PreOrder(*TreeNonBinary);
 
-                printHalfScreen("LEVELORDER : ", true, false);
-                printHalfScreen("\t->  ", true, false);
-                LevelOrder(*TreeNonBinary);
+            printHalfScreen("LEVELORDER : ", true, false);
+            printHalfScreen("\t->  ", true, false);
+            LevelOrder(*TreeNonBinary);
 
-                printHalfScreen("\n", false, false);
-                printHalfScreen("tekan ENTER untuk melanjutkan...", true, false);
-                getch();
-            }
+            printHalfScreen("\n", false, false);
+            printHalfScreen("tekan ENTER untuk melanjutkan...", true, false);
+            getch();
             break;
 
         case 6:
             printGridUI("TRANSFORMASI TREE");
-            if (IsEmpty(*TreeNonBinary))
-            {
-                gotoxy(0, 3);
-                printHalfScreen("Tree Kosong/Tidak ada", true, false);
-                printHalfScreen("Proses transformasi tidak dapat dilakukan,", true, false);
-                printHalfScreen("tekan ENTER untuk melanjutkan", true, false);
-                getch();
-            }
-            else
-            {
-                printHalfScreen("tekan ENTER untuk melanjutkan...", false, false);
-                gotoxy(0, 3);
+            printHalfScreen("tekan ENTER untuk melanjutkan...", false, false);
+            gotoxy(0, 3);
 
-                ConvertTree(*TreeNonBinary, &(*TreeBinary));
+            ConvertTree(*TreeNonBinary, &(*TreeBinary));
 
-                printf("Struktur Non Binary Tree:\n");
-                PrintTree(*TreeNonBinary, 0, false);
+            printf("Struktur Non Binary Tree:\n");
+            PrintTree(*TreeNonBinary, 0, false);
 
-                printf("Struktur Tree Hasil Transformasi:\n");
-                PrintTree(*TreeBinary, 0, true);
+            printf("Struktur Tree Hasil Transformasi:\n");
+            PrintTree(*TreeBinary, 0, true);
 
-                Balance(&(*TreeBinary));
+            Balance(&(*TreeBinary));
 
-                printf("Struktur Tree Setelah Balancing:\n");
-                PrintTree(*TreeBinary, 0, true);
+            printf("Struktur Tree Setelah Balancing:\n");
+            PrintTree(*TreeBinary, 0, true);
 
-                getch();
-            }
+            save(*TreeNonBinary, *TreeBinary);
+
+            getch();
             break;
         case 7:
             exit(0);
@@ -962,3 +909,63 @@ void printHalfScreen(char Pesan[], bool isNewLine, bool cancelEnter)
     printf("%s", Pesan);
 }
 // ================================================= Fungsi tambahan yang hanya berguna untuk mempercantik tampilan, tidak berpengaruh pada alur proses
+
+// Modul Save History
+void save(address TreeNonBinary, address TreeBinary)
+{
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+
+    char foldername[20];
+    sprintf(foldername, "history");
+    _mkdir(foldername);
+
+    char filename[20];
+    sprintf(filename, "history\\%04d-%02d-%02d, %02d-%02d.txt", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min);
+    FILE *fp = fopen(filename, "a");
+    if (fp == NULL)
+    {
+        return;
+    }
+    char teks[100];
+    sprintf(teks, "HISTORY KONVERSI PADA %04d-%02d-%02d | %02d:%02d\n\n-Struktur Non Binary Tree:\n", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min);
+
+    fprintf(fp, "%s", teks);
+    fclose(fp);
+    FilePrintTree(TreeNonBinary, 0, false, filename);
+
+    fp = fopen(filename, "a");
+    char teks2[] = "\n-Struktur Binary Tree:\n";
+    fprintf(fp, "%s", teks2);
+    fclose(fp);
+
+    FilePrintTree(TreeBinary, 0, TRUE, filename);
+}
+void FilePrintTree(address P, int Level, bool binary, char filename[])
+{
+    if (P != NULL)
+    {
+        FILE *fp = fopen(filename, "a");
+        int i = 1;
+        for (i = 1; i <= Level; i++)
+        {
+            if (i < Level)
+            {
+                fprintf(fp, "|  ");
+            }
+            else
+            {
+                fprintf(fp, "|--");
+            }
+        }
+        fprintf(fp, "%c\n", Info(P));
+        fclose(fp);
+        FilePrintTree(LeftSon(P), Level + 1, binary, filename);
+        if (binary)
+        {
+            Level++;
+        }
+        FilePrintTree(NextBrother(P), Level, binary, filename);
+    }
+}
+// Modul Save History
